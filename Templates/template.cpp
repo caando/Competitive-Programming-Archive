@@ -76,6 +76,11 @@ ll mod_inv(ll a, ll P) {
 	return pow_mod(a, P - 2ll, P);
 }
 
+// calculate modulo inverse (log n)
+ll mod_div(ll a, ll b, ll P) {
+	return a * mod_inv(b, P) % P;
+}
+
 // most significant bit (log n)
 int msb(ll a){ 
 	for(int i = 62; i >= 0; i--){
@@ -84,30 +89,48 @@ int msb(ll a){
 	return 0;
 }
 
-// Combinations
-vector<vector<ll>> nCr;
-void NCR(int n, ll P){
-	nCr.reserve(n+1);
-	forn(i, 0, n+1) {
-		vector<ll> v(n+1);
-		nCr.pb(v);
-	}
-	forn(i, 0, n+1) nCr[i][i] = 1, nCr[i][0] = 1;
-	forn(i, 1, n+1){
-		forn(j, 1, i) {
-			nCr[i][j] = nCr[i-1][j] + nCr[i-1][j-1];
-			if (nCr[i][j] > P) nCr[i][j] -= P;
-		}
-	}
+// Factorial
+vector<ll> fact;
+void Fact(int n, ll P){
+	if (fact.size() < 1) fact.pb(1);
+	forn(i, fact.size(), n+1) fact.pb(fact[i-1] * i  % P);
 }
 
-// Large prime
-ll P = 1000000007;
+vector<ll> fact_inv;
+void Fact_inv(int n, ll P){
+	if (fact_inv.size() < 1) fact_inv.pb(1);
+	forn(i, fact_inv.size(), n+1) fact_inv.pb(fact_inv[i-1] * mod_inv(i, P) % P);
+}
+
+// Combinations
+ll nCr(int n, int r, ll P){
+	if (r > n) return 0;
+	Fact(n, P);
+	Fact_inv(n, P);
+	return (fact[n] * fact_inv[r] % P) * fact_inv[n-r] % P;
+}
+
+ll nCr_inv(int n, int r, ll P){
+	if (r > n) return 0;
+	Fact(n, P);
+	Fact_inv(n, P);
+	return (fact_inv[n] * fact[r] % P) * fact[n-r] % P;
+}
+
+// RNG
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+// Mod
+ll mod = 1000000007;
+
+void solve(){
+	// Solve
+
+}
 
 int main(){
-	int t;
-	cin >> t;
-	while(t--){
-		// Do stuff
-	}
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout << setprecision(12) << fixed;
+	solve();
 }
