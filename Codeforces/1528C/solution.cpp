@@ -19,13 +19,13 @@ using vll = vector<pll>;
 #define int128 __int128_t
 
 // greatest common divisor
-ll gcd(ll a, ll b) {
-	return b ? gcd (b, a % b) : a;
+ll GCD(ll a, ll b) {
+	return b ? GCD (b, a % b) : a;
 }
 
 // lowest common multiple
 ll lcm(ll a, ll b) {
-	return a / gcd(a, b) * b;
+	return a / GCD(a, b) * b;
 }
 
 // sieve of eratosthenes with smallest prime factor
@@ -55,7 +55,7 @@ ll mul_mod(ll a, ll b, ll P) {
 	return a * b % P;
 }
 
-// power and modulo in (log n)
+// power and modulo (log n)
 ll pow_mod(ll a, ll b, ll P){
 	ll b_expo[63], ans = 1;
 	b_expo[0] = a;
@@ -123,14 +123,67 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 // Mod
 ll mod = 1000000007;
 
-void solve(){
-	// Solve
+int counter;
+vector<vi> c1, c2;
+vii b;
+set<pii> s;
 
+void dfs1(int curr){
+	b[curr].fi = counter++;
+	for (int c : c2[curr]) dfs1(c);
+	b[curr].se = counter++;
+}
+
+int dfs2(int curr){
+	auto it = s.lower_bound(b[curr]);
+	int ans;
+	if ((*it).fi > b[curr].fi && (*it).se < b[curr].se){
+		ans = s.size();
+		for(int c : c1[curr]) ans = max(dfs2(c), ans);
+	} else {
+		pii store = mp(0, 0);
+		if (it != s.begin()){
+			--it;
+			if ((*it).se > b[curr].fi){
+				store = *it;
+				s.erase(it);
+			}
+		}
+		s.insert(b[curr]);
+		ans = s.size();
+		for(int c : c1[curr]) ans = max(dfs2(c), ans);
+		s.erase(s.find(b[curr]));
+		if (store != mp(0, 0)) s.insert(store);
+	}
+	return ans;
+}
+
+void solve(){
+	int n;
+	cin >> n;
+	c1 = vector<vi>(n), c2 = vector<vi>(n);
+	b = vii(n);
+	forn(i, 1, n) {
+		int temp;
+		cin >> temp;
+		c1[temp-1].pb(i);
+	}
+	forn(i, 1, n) {
+		int temp;
+		cin >> temp;
+		c2[temp-1].pb(i);
+	}
+	counter = 0;
+	dfs1(0);
+	s.clear();
+	cout << dfs2(0) << endl;
 }
 
 int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout << setprecision(12) << fixed;
-	solve();
+	int t;
+	cin >> t;
+	while (t--) solve();
 }
