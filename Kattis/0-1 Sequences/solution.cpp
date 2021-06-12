@@ -123,7 +123,28 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const ll mod = 1000000007;
 
 void solve(){
-
+	string s;
+	cin >> s;
+	ll left[sz(s)][2];
+	ll tc = 1, ans = 0;
+	forn(i, 0, sz(s)) if (s[i] == '?') tc *= 2, tc %= mod;
+	ll c1 = 0, c2 = 0;
+	forn(i, 0, sz(s)){
+		left[i][0] = c1, left[i][1] = c2;
+		if (s[i] == '1') c1++;
+		if (s[i] == '?') c2++;
+	}
+	forn(i, 0, sz(s)){
+		if (s[i] == '0'){
+			ans += tc * left[i][0] % mod;
+			ans += tc * left[i][1] % mod * inv_mod(2, mod) % mod;
+		} else if (s[i] == '?'){
+			ans += tc * left[i][0] % mod * inv_mod(2, mod) % mod;
+			ans += tc * left[i][1] % mod * inv_mod(4, mod) % mod;
+		}
+		ans %= mod;
+	}
+	cout << ans % mod;
 }
 
 int main(){
