@@ -121,12 +121,12 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 // Mod
 const ll mod = 1000000007;
-const ll maxn = 200001;
+
 vector<vector<bool>> graph;
 vector<vector<bool>> visited;
 vector<vector<int>> value;
 int n, m;
-
+ 
 pair<int, int> go(pair<int, int> pos, int dir){
 	int x = pos.fi, y = pos.se;
 	if (dir == 0) {
@@ -148,10 +148,10 @@ pair<int, int> go(pair<int, int> pos, int dir){
 	}
 	return mp(-1, -1);
 }
-
+ 
 int high = 0;
 pair<int, int> high_pos;
-
+ 
 set<pair<int, int>> bfs(pair<int, int> start, int val){
 	queue<pair<int, int>> q;
 	q.push(mp(start.fi, start.se));
@@ -176,7 +176,7 @@ set<pair<int, int>> bfs(pair<int, int> start, int val){
 	}
 	return s;
 }
-
+ 
 void bfs2(pair<int, int> start){
 	queue<pair<pair<int, int>, int>> q;
 	q.push(mp(mp(start.fi, start.se), 0));
@@ -190,7 +190,7 @@ void bfs2(pair<int, int> start){
 		}
 	}
 }
-
+ 
 void solve(){
 	cin >> n >> m;
 	graph = vector<vector<bool>>(n, vector<bool>(m));
@@ -204,27 +204,18 @@ void solve(){
 			else graph[i][j] = false;
 		}
 	}
-	
 	bfs2(mp(0, 0));
-	/*forn(i, 0, n){
-		forn(j, 0, m) cout << value[i][j];
-		cout << endl;
-	}*/
 	visited = vector<vector<bool>>(n, vector<bool>(m, 0));
 	value = vector<vector<int>>(n, vector<int>(m, INT32_MAX));
 	high = 0;
 	int ans = 0;
-	if (!graph[high_pos.fi][high_pos.se]) ans++;
-	bfs2(high_pos);/*
-	forn(i, 0, n){
-		forn(j, 0, m) cout << value[i][j];
-		cout << endl;
-	}*/
+	pair<int, int> last_high = high_pos;
+	bfs2(high_pos);
+    if ((!graph[high_pos.fi][high_pos.se]) || (!graph[last_high.fi][last_high.se])) ans++;
+
 	cout << ans + high/2;
-
-
 }
-
+ 
 int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
