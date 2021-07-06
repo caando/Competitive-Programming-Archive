@@ -108,66 +108,44 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 ll mod = 1000000007;
 
-/*
-WARNING:
-
-THIS IS A HUGE MESS AND IS BY NO MEANS A GOOD SOLUTION
-
-*/
-
-ll dp[20][12];
-
-ll calc(int pos, int prev, vector<int> &arr){
-    if (arr.size() == 0) return 0;
-    if (dp[pos][prev] != -1) return dp[pos][prev];
-    ll res = 0;
-    int low=0, high;
-    if (prev == 11) high = arr[pos]+1;
-    else high = 10;
-    if (prev == 10 || pos == 0) {
-        low = 1;
-        if (pos != arr.size()-1) res += calc(pos+1, 10, arr);
-    }
-
-    forn(i, low, high){
-        if (prev == 11 || pos == 0){
-            if (pos == 0){
-                if (pos == arr.size()-1) res++;
-                else if (i == arr[pos]) res += calc(pos+1, 11, arr);
-                else res += calc(pos+1, i, arr);
-            } else if (i != arr[pos-1]){
-                if (pos == arr.size()-1) res++;
-                else if (i == arr[pos]) res += calc(pos+1, 11, arr);
-                else res += calc(pos+1, i, arr);
-            }
-        } else {
-            if (i != prev) {
-                if (pos == arr.size()-1) res++;
-                else res += calc(pos+1, i, arr);
+ll calc(ll n){
+    ll temp = abs(n), ans = 0;
+    vector<ll> tmp, digits;
+    while (temp > 0) tmp.pb(temp%10), temp /= 10;
+    while(!tmp.empty()) digits.pb(tmp.back()), tmp.pop_back();
+    bool check = true;
+    for(int i = 1; i < digits.size(); i++) if (digits[i] == digits[i-1]) check = false;
+    if (check && digits.size() > 0) ans++;
+    ll dp[10];
+    memset(dp, 0, sizeof dp);
+    bool curr = true;
+    for(ll i = 0; i < digits.size(); i++){
+        ll nxt[10];
+        memset(nxt, 0, sizeof nxt);
+        for(ll d = 0; d < 10; d++) {
+            for(ll pd = 0; pd < 10; pd++) if (d != pd) nxt[d] += dp[pd];
+            if (i != 0 && d != 0) nxt[d]++;
+        }
+        if (curr){
+            for(ll d = 0; d < digits[i]; d++){ 
+                if (i == 0 && d == 0) continue;
+                if (i > 0) if (d == digits[i-1]) continue;
+                if (i > 1) if(digits[i-1] == digits[i-2]) curr = false;
+                if (!curr) continue;
+                nxt[d]++;
             }
         }
+        for(ll d = 0; d < 10; d++) dp[d] = nxt[d];
     }
-    dp[pos][prev] = res;
-    return res;
+    for(ll d = 0; d < 10; d++) ans += dp[d];
+    if (n < 0) ans *= -1;
+    return ans;
 }
 
 void solve(){
     ll a, b;
     cin >> a >> b;
-    a--;
-    vector<int> temp, A, B;
-    while (a > 0) temp.push_back(a%10), a/=10;
-    while (!temp.empty()) A.push_back(temp.back()), temp.pop_back();
-
-    while (b > 0) temp.push_back(b%10), b/= 10;
-    while (!temp.empty()) B.push_back(temp.back()), temp.pop_back();
-
-    forn(i, 0, 20) forn(j, 0, 12) dp[i][j] = -1;
-    b = calc(0, 11, B);
-    if (a < 0) b ++, a = 0;
-    forn(i, 0, 20) forn(j, 0, 12) dp[i][j] = -1;
-    a = calc(0, 11, A);
-    cout << b - a;
+    cout << calc(b) - calc(a-1);
 }
 
 int main(){
