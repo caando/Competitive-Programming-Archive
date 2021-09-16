@@ -56,7 +56,7 @@ const long long mod = 1000000007;
 const int MAXN = 800005;
 
 vector<vector<pair<ll, ll>>> adj;
-vector<vector<ll>> dp, dp1;
+vector<vector<ll>> dp;
 ll s, ans;
 
 void dfs(int v, int p){
@@ -112,7 +112,6 @@ void solve(int T){
     s = 0, ans = 1;
     adj = vector<vector<pair<ll, ll>>>(n); 
     dp = vector<vector<ll>>(n, vector<ll>(22, 0));
-    dp1 = vector<vector<ll>>(n, vector<ll>(22, 0));
     forn(i, 0, n-1){
         int a, b, c;
         cin >> a >> b >> c;
