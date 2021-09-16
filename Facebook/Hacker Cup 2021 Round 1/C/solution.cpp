@@ -91,7 +91,6 @@ void dfs1(int v, int p){
                     cur %= mod;
                 }
             }
-            debug(v, e.fi, cur);
             ans *= (s - cur + mod) % mod;
             ans %= mod;
             for(ll i = 21; i >= 0; i--){
