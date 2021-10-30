@@ -36,32 +36,37 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const long double eps = 1e-9;
 const long long mod = 998244353;
 const int MAXN = 200000;
-#include <ext/pb_ds/assoc_container.hpp>
-using namespace __gnu_pbds;
 
 void solve(){
     ll n, t = 0;
     cin >> n;
     int arr[n];
     forn(i, 0, n) cin >> arr[i];
-    gp_hash_table<int, ll> cur;
+    vector<pair<int, ll>> cur, nxt, nxt1;
     for(int i = n-1; i >= 0; i--){
-        gp_hash_table<int, ll> nxt;
+        nxt.clear();
+        nxt1.clear();
         for(auto it : cur){
             t += (it.fi-1) * it.se * (i+1);
             if(i > 0) {
                 int t1 = arr[i]/it.fi;
-                ll add = arr[i-1]/t1 + (int)(arr[i-1]%t1>0);
-                nxt[add] += it.se;
+                int add = (arr[i-1]+t1-1)/t1;
+                nxt.pb(mp(add, it.se));
             }
         }
         t %= mod;
         if(i > 0) {
             ll d = arr[i-1]/arr[i] + (int)(arr[i-1]%arr[i]>0);
-            nxt[d]++;
+            nxt.pb(mp(d, 1));
         }
-        cur.clear();
-        cur = nxt;
+        sort(all(nxt));
+        for(auto it : nxt){
+            if (nxt1.empty()) nxt1.pb(it);
+            else if (it.fi == nxt1[sz(nxt1)-1].fi){
+                nxt1[sz(nxt1)-1].se += it.se;
+            } else nxt1.pb(it);
+        }
+        cur = nxt1;
     }
     cout << t << '\n';
 }
