@@ -41,7 +41,7 @@ const int MAXN = 200000;
 void solve(){
     int n, m;
     cin >> n >> m;
-    vector<pair<int, int>> cols[m], rows[n];
+    vector<pair<int, int>> rows[n];
     forn(i, 0, n){
         forn(j, 0, m){
             int temp;
