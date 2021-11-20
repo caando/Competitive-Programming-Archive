@@ -50,20 +50,15 @@ void solve(){
     memset(mul, 0, sizeof mul);
     mul[1] = 1;
     forn(i, 2, n+1){
-        for(int j = i*2; j <= n; j+=i){
-            c[j] -= c[i];
-        }
+        for(int j = i*2; j <= n; j+=i) c[j] -= c[i];
     }
     forn(i, 1, n+1){
-        for(int j = i*2; j <= n; j+=i){
-            mul[j] -= mul[i];
-        }
+        for(int j = i*2; j <= n; j+=i) mul[j] -= mul[i];
     }
-    ll ans = abs(c[1]), t = 0, cnt = 0;
+    ll t = 0, cnt = 0;
     vector<ll> pos, neg;
     forn(i, 2, n+1) t += abs(c[i]);
     forn(i, 2, n+1){
-        ans += abs(c[i] + mul[i] * c[1]);
         cnt += abs(mul[i]);
         ll temp = c[i] * mul[i] * -1;
         if (temp > 0) pos.pb(temp);
@@ -77,9 +72,7 @@ void solve(){
     int index = 0;
     forn(i, 1, MAXN){
         while(index < sz(pos)){
-            if (pos[index] >= i) {
-                break;
-            }
+            if (pos[index] >= i) break;
             index++;
         }
         map_pos[i] = map_pos[i-1];
@@ -88,9 +81,7 @@ void solve(){
     index = 0;
     forn(i, 1, MAXN){
         while(index < sz(neg)){
-            if (neg[index] >= i) {
-                break;
-            }
+            if (neg[index] >= i) break;
             index++;
         }
         map_neg[i] = map_neg[i-1];
@@ -103,11 +94,8 @@ void solve(){
         cin >> x;
         x = x - a[1];
         ll ans = t + (cnt+1) * abs(x);
-        if (x < 0){
-            ans -= map_neg[-x] * 2;
-        } else {
-            ans -= map_pos[x] * 2;
-        }
+        if (x < 0) ans -= map_neg[-x] * 2;
+        else ans -= map_pos[x] * 2;
         cout << ans << '\n';
     }
 }
